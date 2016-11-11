@@ -1,7 +1,10 @@
 ﻿using System;
-using PushoverClient;
+using System.Collections.Specialized;
+using System.Net;
+using System.Text;
 using Seq.Apps;
 using Seq.Apps.LogEvents;
+using Serilog.Context;
 
 namespace Seq.App.Pushover {
 
@@ -23,23 +26,26 @@ namespace Seq.App.Pushover {
         [SeqAppSetting(DisplayName = "Device", HelpText = "The device that will receive notifications.", IsOptional = true)]
         public string Device { get; set; }
 
-        private PushoverClient.Pushover Client { get; set; }
-
-        protected override void OnAttached() {
-            base.OnAttached();
-
-            this.Client = new PushoverClient.Pushover(this.ApiKey);
-        }
-
         public void On(Event<LogEventData> evt) {
+            var parameters = new NameValueCollection {
+                { "token", this.ApiKey },
+                { "user", this.UserKey },
+                { "message", this.MessageTemplate },
+                { "device", this.Device }
+            };
 
             try {
-                PushResponse response = this.Client.Push(title: this.Title, message: this.MessageTemplate, userKey: this.UserKey, device: this.Device);
+                byte[] response;
+                using (var client = new WebClient()) {
+                    response = client.UploadValues("https://api.pushover.net/1/messages.json", parameters);
+                }
 
-                this.Log.Information("{@PushoverResponse}", response);
+                using (LogContext.PushProperty("PushoverResponse", Encoding.Default.GetString(response))) {
+                    this.Log.Verbose("Pushing event.");
+                }
             }
             catch (Exception ex) {
-                this.Log.Error(ex, "Error pushing notification.");
+                this.Log.Error(ex, "Error pushing event.");
             }
         }
     }

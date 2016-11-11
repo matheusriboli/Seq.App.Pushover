@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectFormatter.cs" />
+    <Compile Include="PropertyResolver.cs" />
     <Compile Include="PushoverReactor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Net;
-using System.Text;
 using Seq.Apps;
 using Seq.Apps.LogEvents;
-using Serilog.Context;
 
 namespace Seq.App.Pushover {
 
@@ -27,21 +25,22 @@ namespace Seq.App.Pushover {
         public string Device { get; set; }
 
         public void On(Event<LogEventData> evt) {
-            var parameters = new NameValueCollection {
-                { "token", this.ApiKey },
-                { "user", this.UserKey },
-                { "message", this.MessageTemplate },
-                { "device", this.Device }
-            };
 
             try {
+
+                PropertyResolver searcher = new PropertyResolver();
+
+                var parameters = new NameValueCollection {
+                    { "token", this.ApiKey },
+                    { "title", searcher.ResolveProperties(this.Title, evt.Data.Properties) },
+                    { "user", this.UserKey },
+                    { "message", searcher.ResolveProperties(this.MessageTemplate, evt.Data.Properties) },
+                    { "device", this.Device }
+                };
+
                 byte[] response;
                 using (var client = new WebClient()) {
                     response = client.UploadValues("https://api.pushover.net/1/messages.json", parameters);
-                }
-
-                using (LogContext.PushProperty("PushoverResponse", Encoding.Default.GetString(response))) {
-                    this.Log.Verbose("Pushing event.");
                 }
             }
             catch (Exception ex) {

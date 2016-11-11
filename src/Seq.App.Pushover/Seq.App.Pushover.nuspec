@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
     <id>Seq.App.Pushover</id>
-    <version>1.0.2</version>
+    <version>0.0.0-dev</version>
     <authors>Matheus André Riboli</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>The Pushover app for Seq (https://getseq.net) formats events as text and sends them via push.</description>
@@ -13,7 +13,5 @@
   <files>
     <file src="bin\Release\Seq.App.Pushover.dll" target="lib\net45" />
     <file src="bin\Release\Seq.App.Pushover.pdb" target="lib\net45" />
-    <file src="bin\Release\PushoverClient.dll" target="lib\net45" />
-    <file src="bin\Release\ServiceStack.Text.dll" target="lib\net45" />
   </files>
 </package>

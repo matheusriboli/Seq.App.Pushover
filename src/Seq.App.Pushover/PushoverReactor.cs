@@ -28,13 +28,13 @@ namespace Seq.App.Pushover {
 
             try {
 
-                PropertyResolver searcher = new PropertyResolver();
+                PropertyResolver resolver = new PropertyResolver();
 
                 var parameters = new NameValueCollection {
                     { "token", this.ApiKey },
-                    { "title", searcher.ResolveProperties(this.Title, evt.Data.Properties) },
+                    { "title", resolver.ResolveProperties(this.Title, evt) },
                     { "user", this.UserKey },
-                    { "message", searcher.ResolveProperties(this.MessageTemplate, evt.Data.Properties) },
+                    { "message", resolver.ResolveProperties(this.MessageTemplate, evt) },
                     { "device", this.Device }
                 };
 

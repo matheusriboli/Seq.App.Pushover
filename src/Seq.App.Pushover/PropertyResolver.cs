@@ -2,12 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Seq.Apps;
+using Seq.Apps.LogEvents;
 
 namespace Seq.App.Pushover {
 
     public class PropertyResolver {
 
-        public string ResolveProperties(string template, IReadOnlyDictionary<string, object> properties) {
+        public string ResolveProperties(string template, Event<LogEventData> evt) {
 
             string message = template;
 
@@ -24,7 +26,14 @@ namespace Seq.App.Pushover {
 
                 if (propertiesDictionary.ContainsKey(propertyName) == false) {
 
-                    var propertyValue = this.SearchProperty(propertyName, properties);
+                    string propertyValue;
+
+                    if (propertyName.StartsWith("@")) {
+                        propertyValue = this.GetSeqProperty(propertyName, evt);
+                    }
+                    else {
+                        propertyValue = this.GetProperty(propertyName, evt.Data.Properties);
+                    }
 
                     propertiesDictionary.Add(propertyName, propertyValue);
                 }
@@ -38,7 +47,42 @@ namespace Seq.App.Pushover {
             return message;
         }
 
-        private string SearchProperty(string propertyName, object obj) {
+        private string GetSeqProperty(string propertyName, Event<LogEventData> evt) {
+            propertyName = propertyName.ToLower().Trim();
+
+            string propertyValue = null;
+
+            switch (propertyName) {
+                case "@id":
+                    propertyValue = evt.Id;
+                    break;
+                case "@timestamputc":
+                    propertyValue = evt.TimestampUtc.ToString();
+                    break;
+                case "@eventtype":
+                    propertyValue = evt.EventType.ToString();
+                    break;
+                case "@exception":
+                    propertyValue = evt.Data.Exception;
+                    break;
+                case "@level":
+                    propertyValue = evt.Data.Level.ToString();
+                    break;
+                case "@localtimestamp":
+                    propertyValue = evt.Data.LocalTimestamp.ToString();
+                    break;
+                case "@messagetemplate":
+                    propertyValue = evt.Data.MessageTemplate;
+                    break;
+                case "@renderedmessage":
+                    propertyValue = evt.Data.RenderedMessage;
+                    break;
+            }
+
+            return propertyValue;
+        }
+
+        private string GetProperty(string propertyName, object obj) {
 
             var properties = obj as IReadOnlyDictionary<string, object>;
 
@@ -62,7 +106,7 @@ namespace Seq.App.Pushover {
 
             if (item == null) { return null; }
 
-            if (hasChild) { return this.SearchProperty(childItemName, item); }
+            if (hasChild) { return this.GetProperty(childItemName, item); }
 
             if (item is IEnumerable && (item is string) == false) {
                 return new ObjectFormatter().Format(item);

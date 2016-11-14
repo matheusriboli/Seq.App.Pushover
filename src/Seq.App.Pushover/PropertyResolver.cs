@@ -9,6 +9,8 @@ namespace Seq.App.Pushover {
 
     public class PropertyResolver {
 
+        private static readonly ObjectFormatter _objectFormatter = new ObjectFormatter();
+
         public string ResolveProperties(string template, Event<LogEventData> evt) {
 
             string message = template;
@@ -109,7 +111,7 @@ namespace Seq.App.Pushover {
             if (hasChild) { return this.GetProperty(childItemName, item); }
 
             if (item is IEnumerable && (item is string) == false) {
-                return new ObjectFormatter().Format(item);
+                return PropertyResolver._objectFormatter.Format(item);
             }
             else {
                 return item.ToString();

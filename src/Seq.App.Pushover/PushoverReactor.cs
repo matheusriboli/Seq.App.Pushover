@@ -11,6 +11,7 @@ namespace Seq.App.Pushover {
     public class PushoverReactor : Reactor, ISubscribeTo<LogEventData> {
 
         private readonly ConcurrentDictionary<uint, DateTime> _events = new ConcurrentDictionary<uint, DateTime>();
+        private readonly static PropertyResolver _resolver = new PropertyResolver();
 
         [SeqAppSetting(DisplayName = "ApiKey", HelpText = "Your Pushover api key.", IsOptional = false)]
         public string ApiKey { get; set; }
@@ -36,13 +37,11 @@ namespace Seq.App.Pushover {
 
             try {
 
-                PropertyResolver resolver = new PropertyResolver();
-
                 var parameters = new NameValueCollection {
                     { "token", this.ApiKey },
-                    { "title", resolver.ResolveProperties(this.Title, evt) },
+                    { "title", PushoverReactor._resolver.ResolveProperties(this.Title, evt) },
                     { "user", this.UserKey },
-                    { "message", resolver.ResolveProperties(this.MessageTemplate, evt) },
+                    { "message", PushoverReactor._resolver.ResolveProperties(this.MessageTemplate, evt) },
                     { "device", this.Device }
                 };
 

@@ -8,6 +8,7 @@
     <description>The Pushover app for Seq (https://getseq.net) formats events as text and sends them via push.</description>
     <projectUrl>https://github.com/matheusriboli/Seq.App.Pushover</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <iconUrl>https://pushover.net/favicon.ico</iconUrl>
     <tags>seq-app seq serilog events pushover</tags>
   </metadata>
   <files>

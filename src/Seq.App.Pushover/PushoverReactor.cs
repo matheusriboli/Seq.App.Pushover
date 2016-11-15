@@ -16,8 +16,8 @@ namespace Seq.App.Pushover {
         [SeqAppSetting(DisplayName = "ApiKey", HelpText = "Your Pushover api key.", IsOptional = false)]
         public string ApiKey { get; set; }
 
-        [SeqAppSetting(DisplayName = "Title", HelpText = "The title to be used in notifications.", IsOptional = false)]
-        public string Title { get; set; }
+        [SeqAppSetting(DisplayName = "Display Title", HelpText = "The title to be used in notifications.", IsOptional = false)]
+        public string DisplayTitle { get; set; }
 
         [SeqAppSetting(DisplayName = "MessageTemplate", HelpText = "The message template to be used in notifications.", IsOptional = false)]
         public string MessageTemplate { get; set; }
@@ -25,10 +25,10 @@ namespace Seq.App.Pushover {
         [SeqAppSetting(DisplayName = "UserKey", HelpText = "The user that will receive notifications.", IsOptional = true)]
         public string UserKey { get; set; }
 
-        [SeqAppSetting(DisplayName = "Device", HelpText = "The device that will receive notifications.", IsOptional = true)]
-        public string Device { get; set; }
+        [SeqAppSetting(DisplayName = "Devices", HelpText = "The devices that will receive notifications. (Separated by pipe)", IsOptional = true)]
+        public string Devices { get; set; }
 
-        [SeqAppSetting(DisplayName = "Supression time (Seconds)", HelpText = "The time (in seconds) to supress repeated events.", InputType = SettingInputType.Integer, IsOptional = true)]
+        [SeqAppSetting(DisplayName = "Supression time (Seconds)", HelpText = "The time in seconds to supress repeated events.", InputType = SettingInputType.Integer, IsOptional = true)]
         public int SupressionTime { get; set; }
 
         public void On(Event<LogEventData> evt) {
@@ -39,10 +39,10 @@ namespace Seq.App.Pushover {
 
                 var parameters = new NameValueCollection {
                     { "token", this.ApiKey },
-                    { "title", PushoverReactor._resolver.ResolveProperties(this.Title, evt) },
+                    { "title", PushoverReactor._resolver.ResolveProperties(this.DisplayTitle, evt) },
                     { "user", this.UserKey },
                     { "message", PushoverReactor._resolver.ResolveProperties(this.MessageTemplate, evt) },
-                    { "device", this.Device }
+                    { "device", this.Devices }
                 };
 
                 byte[] response;

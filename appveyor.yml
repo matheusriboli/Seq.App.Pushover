@@ -1,7 +1,4 @@
 version: 0.0.{build}-dev
-branches:
-  only:
-  - master
 before_build:
   - cmd: nuget restore
 configuration: Release
@@ -14,4 +11,12 @@ assembly_info:
   assembly_informational_version: '{version}'
 build:
   project: Seq.App.Pushover.sln
+publish_nuget: true
+  publish_nuget_symbols: true
   verbosity: minimal
+deploy:
+- provider: NuGet
+  api_key:
+    secure: wczgzVPerY0xIV4I0DuktKSvNaYIAMVK8Ei1875/fhgt7ZjahBy8hL5Q5ZN/h+2U
+  on:
+    branch: master

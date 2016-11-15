@@ -1,4 +1,4 @@
-# Seq.App.Pushover
+# Seq.App.Pushover  [![Build status](https://ci.appveyor.com/api/projects/status/lb03hn8eh26j6tnh/branch/master?svg=true)](https://ci.appveyor.com/project/MatheusAndrRiboli/seq-app-pushover/branch/master) [![NuGet Badge](https://buildstats.info/nuget/Seq.App.Pushover)](https://www.nuget.org/packages/Seq.App.Pushover/)
 
 Forwards events to Pushover (https://pushover.net/).
 

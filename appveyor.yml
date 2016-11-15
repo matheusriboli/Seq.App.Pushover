@@ -1,4 +1,4 @@
-version: 0.0.{build}-dev
+version: 0.0.{build}
 before_build:
   - cmd: nuget restore
 configuration: Release

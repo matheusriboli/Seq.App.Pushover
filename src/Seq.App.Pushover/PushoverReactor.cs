@@ -19,7 +19,7 @@ namespace Seq.App.Pushover {
         [SeqAppSetting(DisplayName = "Display Title", HelpText = "The title to be used in notifications.", IsOptional = false)]
         public string DisplayTitle { get; set; }
 
-        [SeqAppSetting(DisplayName = "MessageTemplate", HelpText = "The message template to be used in notifications.", IsOptional = false)]
+        [SeqAppSetting(DisplayName = "MessageTemplate", HelpText = "The message template to be used in notifications.", InputType = SettingInputType.LongText, IsOptional = false)]
         public string MessageTemplate { get; set; }
 
         [SeqAppSetting(DisplayName = "UserKey", HelpText = "The user that will receive notifications.", IsOptional = true)]

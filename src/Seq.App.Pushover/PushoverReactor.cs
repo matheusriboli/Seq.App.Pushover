@@ -27,7 +27,15 @@ namespace Seq.App.Pushover {
 
         [SeqAppSetting(DisplayName = "Devices", HelpText = "The devices that will receive notifications. (Separated by pipe)", IsOptional = true)]
         public string Devices { get; set; }
-
+        
+        [SeqAppSetting(DisplayName = "Priority", HelpText = "The priority level for notifications. -2 (lowest), -1 (low), 0 (normal), 1 (high), 2 (emergency)", InputType = SettingInputType.Integer, IsOptional = false)]
+        public int Priority { get; set; }
+        
+        [SeqAppSetting(DisplayName = "Emergency retry interval", HelpText = "(default : 60s) Specifies how often the Pushover servers will send the same notification to the user. Used when priority is emergency", InputType = SettingInputType.Integer, IsOptional = true)]
+        public int Retry { get; set; }
+        
+        [SeqAppSetting(DisplayName = "Emergency retry limit", HelpText = "(default : 600s) Specifies how many seconds the notification will continue to be retried. Used when priority is emergency", InputType = SettingInputType.Integer, IsOptional = true)]
+        public int Expire { get; set; }
         [SeqAppSetting(DisplayName = "Supression time (Seconds)", HelpText = "The time in seconds to supress repeated events.", InputType = SettingInputType.Integer, IsOptional = true)]
         public int SupressionTime { get; set; }
 
@@ -42,8 +50,15 @@ namespace Seq.App.Pushover {
                     { "title", PushoverReactor._resolver.ResolveProperties(this.DisplayTitle, evt) },
                     { "user", this.UserKey },
                     { "message", PushoverReactor._resolver.ResolveProperties(this.MessageTemplate, evt) },
-                    { "device", this.Devices }
+                    { "device", this.Devices },
+                    { "priority", this.Priority.ToString() },
                 };
+                
+                // Emergency priority requires retry and expire values
+                if (Priority == 2) {
+                    parameters.Add("retry", "60");
+                    parameters.Add("expire", "600");
+                }
 
                 byte[] response;
                 using (var client = new WebClient()) {

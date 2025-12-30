@@ -36,6 +36,10 @@ namespace Seq.App.Pushover {
         
         [SeqAppSetting(DisplayName = "Emergency retry limit", HelpText = "(default : 600s) Specifies how many seconds the notification will continue to be retried. Used when priority is emergency", InputType = SettingInputType.Integer, IsOptional = true)]
         public int Expire { get; set; }
+
+        [SeqAppSetting(DisplayName = "Sound", HelpText = "The notification sound to play. Valid values: NotSet (default, use app settings), Pushover, Bike, Bugle, CashRegister, Classical, Cosmic, Falling, Gamelan, Incoming, Intermission, Magic, Mechanical, Pianobar, Siren, SpaceAlarm, Tugboat, Alien, Climb, Persistent, Echo, Updown, None", IsOptional = true)]
+        public string Sound { get; set; }
+        
         [SeqAppSetting(DisplayName = "Supression time (Seconds)", HelpText = "The time in seconds to supress repeated events.", InputType = SettingInputType.Integer, IsOptional = true)]
         public int SupressionTime { get; set; }
 
@@ -52,6 +56,7 @@ namespace Seq.App.Pushover {
                     { "message", PushoverReactor._resolver.ResolveProperties(this.MessageTemplate, evt) },
                     { "device", this.Devices },
                     { "priority", this.Priority.ToString() },
+                    { "sound", string.IsNullOrWhiteSpace(this.Sound) ? "NotSet" : this.Sound }
                 };
                 
                 // Emergency priority requires retry and expire values

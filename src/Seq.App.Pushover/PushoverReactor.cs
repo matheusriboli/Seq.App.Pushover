@@ -73,7 +73,16 @@ namespace Seq.App.Pushover {
                     
                     parameters.Add("sound", sound);
                 }
+                
+                if (Priority < -2)
                 {
+                    Priority = -2;
+                    Log.Warning("Priority value {Priority} is too low: setting to -2", Priority);
+                }
+                else if (Priority > 2)
+                {
+                    Priority = 2;
+                    Log.Warning("Priority value {Priority} is too high: setting to 2", Priority);
                 }
                 
                 // Emergency priority requires retry and expire values

@@ -8,7 +8,7 @@ using Seq.Apps.LogEvents;
 namespace Seq.App.Pushover {
 
     [SeqApp("Pushover App", Description = "Sends events to Pushover using a provided template message.")]
-    public class PushoverReactor : Reactor, ISubscribeTo<LogEventData> {
+    public class PushoverReactor : SeqApp, ISubscribeTo<LogEventData> {
 
         private readonly ConcurrentDictionary<uint, DateTime> _events = new ConcurrentDictionary<uint, DateTime>();
         private readonly static PropertyResolver _resolver = new PropertyResolver();

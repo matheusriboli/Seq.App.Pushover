@@ -12,7 +12,12 @@ namespace Seq.App.Pushover {
 
         private readonly ConcurrentDictionary<uint, DateTime> _events = new ConcurrentDictionary<uint, DateTime>();
         private readonly static PropertyResolver _resolver = new PropertyResolver();
-
+        private readonly static System.Collections.Generic.HashSet<string> _validSounds = new System.Collections.Generic.HashSet<string> {
+            "pushover", "bike", "bugle", "cashregister", "classical", "cosmic", "falling", "gamelan", "incoming",
+            "intermission", "magic", "mechanical", "pianobar", "siren", "spacealarm", "tugboat", "alien", "climb",
+            "persistent", "echo", "updown", "none"
+        };
+        
         [SeqAppSetting(DisplayName = "ApiKey", HelpText = "Your Pushover api key.", IsOptional = false)]
         public string ApiKey { get; set; }
 
@@ -37,7 +42,7 @@ namespace Seq.App.Pushover {
         [SeqAppSetting(DisplayName = "Emergency retry limit", HelpText = "(default : 600s) Specifies how many seconds the notification will continue to be retried. Used when priority is emergency", InputType = SettingInputType.Integer, IsOptional = true)]
         public int Expire { get; set; }
 
-        [SeqAppSetting(DisplayName = "Sound", HelpText = "The notification sound to play. Valid values: Default (app settings), Pushover, Bike, Bugle, CashRegister, Classical, Cosmic, Falling, Gamelan, Incoming, Intermission, Magic, Mechanical, PianoBar, Siren, SpaceAlarm, Tugboat, Alien, Climb, Persistent, Echo, UpDown, None", IsOptional = true)]
+        [SeqAppSetting(DisplayName = "Sound", HelpText = "The notification sound to play. When empty app settings are used. Valid values: Pushover, Bike, Bugle, CashRegister, Classical, Cosmic, Falling, Gamelan, Incoming, Intermission, Magic, Mechanical, PianoBar, Siren, SpaceAlarm, Tugboat, Alien, Climb, Persistent, Echo, UpDown, None", IsOptional = true)]
         public string Sound { get; set; }
         
         [SeqAppSetting(DisplayName = "Supression time (Seconds)", HelpText = "The time in seconds to supress repeated events.", InputType = SettingInputType.Integer, IsOptional = true)]
@@ -57,10 +62,18 @@ namespace Seq.App.Pushover {
                     { "device", this.Devices },
                     { "priority", this.Priority.ToString() }
                 };
-
-                if (!string.IsNullOrWhiteSpace(Sound) && Sound.ToLower() != "notset")
+                
+             
+                var sound = Sound?.Trim().ToLowerInvariant();
+                if (!string.IsNullOrWhiteSpace(sound)) 
                 {
-                    parameters.Add("sound", Sound.ToLower().Trim());
+                    if (!_validSounds.Contains(sound)) {
+                        Log.Warning("Invalid Sound {Sound}: using app default", Sound);
+                    }
+                    
+                    parameters.Add("sound", sound);
+                }
+                {
                 }
                 
                 // Emergency priority requires retry and expire values

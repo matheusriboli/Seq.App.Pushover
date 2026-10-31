@@ -86,9 +86,10 @@ namespace Seq.App.Pushover {
                 }
                 
                 // Emergency priority requires retry and expire values
-                if (Priority == 2) {
-                    parameters.Add("retry", "60");
-                    parameters.Add("expire", "600");
+                if (Priority == 2) 
+                {
+                    parameters.Add("retry", (Retry > 0 ? Retry : 60).ToString());
+                    parameters.Add("expire", (Expire > 0 ? Expire : 600).ToString());
                 }
 
                 byte[] response;
